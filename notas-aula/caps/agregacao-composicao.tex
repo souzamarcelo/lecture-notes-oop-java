@@ -1,0 +1,400 @@
+\chapter{Agregação e composição}
+
+A agregação e a composição são tipos específicos de associações, onde uma entidade forma parte de outra. Logo, a implementação de uma agregação ou de uma composição é idêntica à implementação de uma associação simples\footnote{Em alguns casos são implementadas regras simples na agregação e na composição, como a obrigatoriedade do vínculo ou a garantia de que uma entidade qualquer não seja componente de duas entidades simultaneamente}. Isto é, a diferença entre elas é conceitual.
+
+\section{Relacionamento todo-parte}
+
+A agregação e a composição acontecem quando duas entidades possuem um relacionamento todo-parte. Neste relacionamento, uma das entidades forma parte da outra. Por exemplo, uma empresa é composta por departamentos. Os departamentos são partes da empresa. Logo, a entidade \code{Empresa} é chamada ``todo'', enquanto a entidade \code{Departamento} é chamada ``parte''.
+
+Uma instância da classe todo possui uma ou mais instâncias da classe parte. A instância da classe parte complementa as informações da classe todo, de modo que o todo não é completo sem as suas partes. No exemplo da empresa e dos seus departamentos, uma empresa sem departamentos não é completa e os departamentos complementam as informações sobre a empresa. Abaixo são apresentados outros exemplos de entidades que se relacionam como todo-parte.
+
+\begin{itemize}
+	\item Um veículo (todo) é composto por quatro rodas (parte).
+	\item Um computador (todo) possui um teclado, um mouse e um monitor (partes).
+	\item Uma lista de compras (todo) possui uma lista de itens a comprar (parte).
+	\item Uma empresa (todo) é composta por departamentos (parte).
+	\item Um livro (todo) é composto por capítulos (parte).
+	\item Um capítulo do livro (todo) é composto por páginas (parte).
+\end{itemize}
+
+Existem algumas características (apresentadas no formato de perguntas) que auxiliam na identificação de um relacionamento todo-parte:
+
+\begin{enumerate}
+\item O relacionamento é descrito com uma frase ``parte de''?
+	\begin{itemize}
+		\item Um \textbf{botão} é parte de uma \textbf{janela}.
+		\item A \textbf{porta} é parte de um \textbf{carro}.
+	\end{itemize}
+	
+\item Algumas operações no todo são automaticamente aplicadas a suas partes?
+\begin{itemize}
+	\item Mover a \textbf{janela} implica em mover o \textbf{botão}.
+	\item Mover o \textbf{carro} implica em mover a \textbf{porta}.
+\end{itemize}
+
+\item Alguns valores de atributos são propagados do todo para todos ou algumas de suas partes?
+\begin{itemize}
+	\item A fonte da \textbf{janela} é Arial, a fonte do \textbf{botão} é Arial.
+	\item Pintar o carro de \textbf{vermelho} implica pintar também a \textbf{porta} de vermelho.
+\end{itemize}
+
+\item Existe uma assimetria inerente no relacionamento onde uma classe é subordinada a outra?
+\begin{itemize}
+	\item Uma \textbf{botão} É parte de uma \textbf{janela}, uma \textbf{janela} NÃO É parte de um \textbf{botão}.
+	\item Uma \textbf{porta} É parte de um \textbf{carro}, um \textbf{carro} NÃO É parte de uma \textbf{porta}.
+\end{itemize}
+\end{enumerate}
+
+Logo, tanto as entidades \textbf{janela} e \textbf{botão}, quanto as entidades \textbf{carro} e \textbf{porta} formam relacionamentos todo-parte.
+
+
+\section{Agregação}
+Existem duas regras que determinam que o relacionamento todo-parte trata-se de uma agregação:
+
+\begin{enumerate}
+	\item Ambas as entidades (todo e parte) podem existir de forma independente à outra.
+	\item Uma entidade parte pode estar relacionada com mais de uma entidade todo ao mesmo tempo.
+\end{enumerate}
+ 
+\textbf{Um exemplo:} uma escola possui vários professores.
+\begin{itemize}
+	\item Trata-se de uma agregação, pois um professor pode existir fora do relacionamento com a escola.
+	\item Trata-se de uma agregação, pois um professor pode trabalhar em duas escolas ao mesmo tempo, ou seja, sua entidade se relaciona com dois objetos diferentes do todo.
+\end{itemize}
+
+Na UML, representamos uma agregação com um losango não preenchido no lado da entidade que representa o todo. A Figura~\ref{fig:agregacao-professor-escola} mostra as classes \code{Professor} e \code{Escola} e seu relacionamento de agregação. Repare que a entidade todo recebe o losango do relacionamento.
+
+\begin{figure}[h]
+	\centering
+	
+	\begin{tikzpicture}
+	\umlclass{Escola}{
+		-- nome: String \\
+		-- cidade: String
+	}{
+		+ métodos construtores \\
+		+ métodos acessores
+	}
+	
+	\umlclass[x=8]{Professor}{
+		-- nome: String \\
+		-- disciplina: String
+	}{
+		+ métodos construtores \\
+		+ métodos acessores
+	}
+	
+	\umlaggreg[geometry=-|-, align2=top]{Escola}{Professor}
+	\end{tikzpicture}
+	
+	\caption{Relacionamento de agregação entre \texttt{Escola} e \texttt{Professor}}
+	\label{fig:agregacao-professor-escola}
+\end{figure}
+
+Em geral, o atributo que implementa a agregação fica na entidade todo (apesar de não ser uma regra). Quando a agregação possui multiplicidade 1 no lado parte, ela é implementada por um atributo simples no lado todo. Quando a agregação possui multiplicidade muitos no lado parte, ela é implementada por uma lista de objetos no lado todo.
+
+\subsection{Caso com multiplicidade 1}
+
+Um exemplo de agregação com multiplicidade 1 acontece entre as entidades \code{Radar} e \code{SensorVelocidade}. Um radar possui um único sensor de velocidade. O sensor de velocidade fica localizado abaixo da pista e, portanto, existe mesmo fora do relacionamento com o radar e pode estar relacionado com dois ou mais radares ao mesmo tempo (regras para definição de uma agregação). A Figura~\ref{fig:agregacao-radar-sensor} mostra o diagrama de classes para este exemplo.
+
+\begin{figure}[h]
+	\centering
+	
+	\begin{tikzpicture}
+	\umlclass{Radar}{
+		-- velocidadeMaxima: double
+	}{
+		+ métodos construtores \\
+		+ métodos acessores
+	}
+	
+	\umlclass[x=8]{SensorVelocidade}{
+		-- precisao: double
+	}{
+		+ métodos construtores \\
+		+ métodos acessores
+	}
+	
+	\umlaggreg[geometry=-|-, mult2=1, pos=2.8, align2=top]{Radar}{SensorVelocidade}
+	\end{tikzpicture}
+	
+	\caption{Relacionamento de agregação entre \texttt{Radar} e \texttt{SensorVelocidade}}
+	\label{fig:agregacao-radar-sensor}
+\end{figure}
+
+Os trechos de código abaixo mostram a implementação das classes apresentadas na Figura~\ref{fig:agregacao-radar-sensor}. Na classe \code{Radar} (entidade todo) o vínculo é implementado pelo atributo \code{sensor}, que é um objeto da entidade parte.
+
+\begin{minted}{java}
+public class Radar {
+	private double velocidadeMaxima;
+	private SensorVelocidade sensor;
+	
+	public SensorVelocidade getSensor() {
+		return sensor;
+	}
+	
+	public void setSensor(SensorVelocidade s){
+		this.sensor = s;
+	}
+}
+\end{minted}
+ 
+\begin{minted}{java}
+public class SensorVelocidade {
+	private double precisao;
+	
+	public double getPrecisao() {
+		return precisao;
+	}
+	
+	public void setPrecisao(double precisao) {
+		this.precisao = precisao;
+	}
+}
+\end{minted}
+
+\subsection{Caso com multiplicidade muitos}
+
+Um exemplo de agregação com multiplicidade muitos ocorre entre uma turma e seus alunos. Os alunos são parte de uma turma, que é a entidade todo. Os alunos existem independente do relcionamento com a turma e um aluno pode pertencer a duas turmas simultaneamente. Logo, temos um relacionamento de agregação. Neste caso, a turma possui vários alunos, definindo a multiplicidade muitos no lado parte. A Figura~\ref{fig:agregacao-turma-aluno} apresenta a estrutura de classes para este exemplo.
+
+\begin{figure}[h]
+	\centering
+	
+	\begin{tikzpicture}
+	\umlclass{Turma}{
+		-- ano: int \\
+		-- semestre: int
+	}{
+		+ métodos construtores \\
+		+ métodos acessores
+	}
+	
+	\umlclass[x=8]{Aluno}{
+		-- matricula: String \\
+		-- nome: String
+	}{
+		+ métodos construtores \\
+		+ métodos acessores
+	}
+	
+	\umlaggreg[geometry=-|-, mult2=*, pos=2.8, align2=top]{Turma}{Aluno}
+	\end{tikzpicture}
+	
+	\caption{Relacionamento de agregação entre \texttt{Turma} e \texttt{Aluno}}
+	\label{fig:agregacao-turma-aluno}
+\end{figure}
+ 
+Os códigos a seguir mostram a implementação das classes apresentadas na Figura~\ref{fig:agregacao-turma-aluno}. Repare que a agregação é implementada por uma lista na entidade todo. Neste sentido, a classe \code{Turma} possui uma lista de objetos da classe \code{Aluno}. Assim como na associação simples, uma boa prática consiste em definir um método \code{addAluno} para realizar o vínculo entre as duas entidades. Da mesma forma, podem ser implementados métodos para alteração e remoção de alunos (ou outros métodos para manipulação dessas entidades).
+
+\begin{minted}{java}
+public class Turma {
+	private int ano;
+	private int semestre;
+	private List<Aluno> alunos = new ArrayList<Aluno>();
+	
+	public void addAluno(Aluno a) {
+		this.alunos.add(a);
+	}
+	
+	public List<Aluno> getAlunos() {
+		return alunos;
+	}
+	
+	public void setAlunos(List<Aluno> alunos){
+		this.alunos = alunos;
+	}
+}
+\end{minted}
+ 
+\begin{minted}{java}
+public class Aluno {
+	private String matricula;
+	private String nome;
+	
+	public String getMatricula() {
+		return matricula;
+	}
+
+	public void setMatricula(String mat) {
+		this.matricula = mat;
+	}
+}
+\end{minted}
+ 
+\section{Composição}
+Existem duas regras que determinam que o relacionamento todo-parte trata-se de uma composição:
+
+\begin{enumerate}
+	\item A entidade parte só existe em função do relacionamento que possui com a entidade todo. Caso a entidade todo seja destruída, suas partes também são destruídas.
+	\item Uma entidade parte pode estar relacionada com apenas uma entidade todo simultaneamente.
+\end{enumerate}
+
+\textbf{Um exemplo:} um veículo possui quatro rodas.
+\begin{itemize}
+	\item Trata-se de uma composição, pois uma roda não existe sem estar vinculada ao veículo.
+	\item Trata-se de uma composição, pois uma roda não pode estar vinculada a dois veículos ao mesmo tempo, sua entidade se relaciona a apenas um objeto todo.
+\end{itemize}
+
+Na UML, representamos uma composição com um losango preenchido no lado da entidade que representa o todo. A Figura~\ref{fig:composicao-veiculo-roda} mostra as classes \code{Veiculo} e \code{Roda} e seu relacionamento de composição. Repare que a entidade todo recebe o losango do relacionamento.
+
+\begin{figure}[h]
+	\centering
+	
+	\begin{tikzpicture}
+	\umlclass{Veiculo}{
+		-- modelo: String \\
+		-- marca: String
+	}{
+		+ métodos construtores \\
+		+ métodos acessores
+	}
+	
+	\umlclass[x=8]{Roda}{
+		-- ano: int
+	}{
+		+ métodos construtores \\
+		+ métodos acessores
+	}
+	
+	\umlcompo[geometry=-|-, align2=top]{Escola}{Professor}
+	\end{tikzpicture}
+	
+	\caption{Relacionamento de agregação entre \texttt{Veiculo} e \texttt{Roda}}
+	\label{fig:composicao-veiculo-roda}
+\end{figure}
+ 
+Da mesma forma como ocorre com a agregação, um relacionamento de composição com multiplicidade 1 na entidade parte é implementado com um atributo simples na classe todo. Um relacionamento de composição com multiplicidade muitos na entidade parte é implementado com uma lista de objetos na classe todo. Diferente da agregação, um objeto da classe parte está associado a apenas um objeto da classe todo (conceito de composição). Logo, a multiplicidade na parte todo é, obrigatoriamente, 1.
+
+\subsection{Caso com multiplicidade 1}
+
+Um exemplo de composição com multiplicidade 1 acontece entre as entidades \code{Computador} e \code{Processador}. Um computador possui um único processador. O processador fica localizado dentro do computador e, portanto, não existe fora do relacionamento com o computador e não pode estar relacionado com dois ou mais computadores ao mesmo tempo (regras para definição de uma composição). A Figura~\ref{fig:composicao-computador-processador} mostra o diagrama de classes para este exemplo.
+
+\begin{figure}[h]
+	\centering
+	
+	\begin{tikzpicture}
+	\umlclass{Computador}{
+	}{
+		+ métodos construtores \\
+		+ métodos acessores
+	}
+	
+	\umlclass[x=8]{Processador}{
+		-- nucleos: int \\
+		-- potencia: double
+	}{
+		+ métodos construtores \\
+		+ métodos acessores
+	}
+	
+	\umlcompo[geometry=-|-, mult2=1, pos=2.8, align2=top]{Computador}{Processador}
+	\end{tikzpicture}
+	
+	\caption{Relacionamento de composição entre \texttt{Computador} e \texttt{Processador}}
+	\label{fig:composicao-computador-processador}
+\end{figure}
+
+Os trechos de código abaixo mostram a implementação das classes apresentadas na Figura~\ref{fig:composicao-computador-processador}. Na classe \code{Computador} (entidade todo) o vínculo é implementado pelo atributo \code{processador}, que é um objeto da entidade parte. Uma boa prática (mas não uma regra) consiste em não implementar o método \code{setProcessador}, mas sim um método que receba os atributos do processador e instancie um novo objeto para vínculo (linhas 4 a 8). Com isso, evita-se que uma mesma instância da entidade parte seja vinculada a duas ou mais instâncias da entidade todo. No entanto, com isso não se permite que o objeto parte troque seu vínculo para outro objeto todo. Caso seja preciso, deve-se implementar os métodos acessores necessários.
+
+\begin{minted}{java}
+public class Computador {
+	private Processador processador;
+
+	public void addProcessador(int nucleos, double potencia) {
+		processador = new Processador();
+		processador.setNucleos(nucleos);
+		processador.setPotencia(potencia);
+	}
+	
+	public void removeProcessador() {
+		this.processador = null;
+	}
+}
+\end{minted}
+ 
+\begin{minted}{java}
+public class Processador {
+	private int nucleos;
+	private double potencia;
+	
+	public int getNucleos() {
+		return nucleos;
+	}
+
+	public void setNucleos(int nucleos) {
+		this.nucleos = nucleos;
+	}
+
+	public double getPotencia() {
+		return potencia;
+	}
+	
+	public void setPotencia(double potencia) {
+		this.potencia = potencia;
+	}
+}
+\end{minted}
+
+\subsection{Caso com multiplicidade muitos}
+
+Um exemplo de composição com multiplicidade muitos acontece entre as entidades \code{Livro} e \code{Capitulo}. Um livro é composto por vários capítulos. O capítulo é parte de um livro e, portanto, não existe fora do relacionamento. Além disso, um capítulo não deve fazer parte de dois livros ao mesmo tempo. Logo, trata-se de uma composição. A Figura~\ref{fig:composicao-livro-capitulo} mostra o diagrama de classes para este exemplo.
+
+\begin{figure}[h]
+	\centering
+	
+	\begin{tikzpicture}
+	\umlclass{Livro}{
+	}{
+		+ métodos construtores \\
+		+ métodos acessores
+	}
+	
+	\umlclass[x=8]{Capitulo}{
+		-- numero: int \\
+		-- titulo: String
+	}{
+		+ métodos construtores \\
+		+ métodos acessores
+	}
+	
+	\umlcompo[geometry=-|-, mult2=*, pos=2.8, align2=top]{Livro}{Capitulo}
+	\end{tikzpicture}
+	
+	\caption{Relacionamento de composição entre \texttt{Livro} e \texttt{Capitulo}}
+	\label{fig:composicao-livro-capitulo}
+\end{figure}
+
+Os trechos de codigo abaixo mostram a implementação da composição apresentada na Figura~\ref{fig:composicao-livro-capitulo}. A composição é definida pela lista de capítulos (atributo \code{caps}) da classe \code{Livro}. Novamente, as operações de criação e vínculo dos caítulos ficam a cargo da classe todo (linhas 4 a 10 da classe \code{Livro}).
+ 
+\begin{minted}{java}
+public class Livro {
+	private List<Capitulo> caps = new ArrayList<Capitulo>();
+
+	public void addCapitulo(
+		int numero, String titulo) {
+		Capitulo c = new Capitulo();
+		c.setNumero(numero);
+		c.setTitulo(titulo);
+		caps.add(c);
+	}
+	
+	//demais métodos
+}
+\end{minted}
+ 
+\begin{minted}{java}
+public class Capitulo {
+	private int numero;
+	private String titulo;
+
+	public int getNumero() {
+		return numero;
+	}
+	
+	public void setNumero(int numero) {
+		this.numero = numero;
+	}
+	
+	//demais métodos
+}
+\end{minted}

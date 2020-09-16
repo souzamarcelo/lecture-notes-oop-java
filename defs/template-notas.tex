@@ -1,0 +1,135 @@
+\documentclass[12pt]{scrbook}
+
+\usepackage{\defs/tikz-uml}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8x]{inputenc}
+\usepackage{lmodern}
+\usepackage[brazilian]{babel}
+\usepackage{minted}
+\usepackage[a4paper, margin=1in, footskip=0.5in]{geometry}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage[export]{adjustbox}
+\usepackage{hyperref}
+\usepackage[square]{natbib}
+\usepackage[parfill]{parskip}
+\usepackage{mdframed}
+\usepackage{longtable}
+\usepackage{soul}
+\usepackage{tabularx}
+\usepackage[shortlabels]{enumitem}
+\usepackage{xifthen}
+\usepackage{multirow}
+
+\hypersetup{
+	colorlinks,
+	linkcolor={blue!80!black},
+	citecolor={blue!80!black},
+	urlcolor={blue!80!black}
+}
+
+\definecolor{codelinecolor}{gray}{.90}
+%\definecolor{codelinecolor}{gray}{.85}%print version
+\colorlet{codeboxcolor}{green!10}
+%\colorlet{codeboxcolor}{gray!30}%print version
+\sethlcolor{codelinecolor}
+
+\newcommand{\modulo}{{\color{gray}\%}}
+
+\usepackage[automark,headsepline,footsepline]{scrlayer-scrpage}
+\lehead{\myname}
+\lohead{\myname}
+\rehead{{\leftmark}}
+\rohead{{\leftmark}}
+\lefoot{}
+\lofoot{}
+\refoot{}
+\rofoot{}
+\cofoot{\\\thepage}
+\cefoot{\\\thepage}
+\setkomafont{pagehead}{\normalfont\small}
+\setkomafont{pagefoot}{\normalfont}
+\renewcommand{\chapterpagestyle}{scrheadings}
+
+\title{\mytitle}
+
+\author{\myname}
+\publishers{%
+	\logo%
+	\university\\%
+	\campus%
+}
+
+\date{}
+\subject{}
+\subtitle{}
+
+\uppertitleback{
+	\version \\ \\
+	\presentation
+}
+
+\lowertitleback{\license}
+
+\surroundwithmdframed{minted}
+
+\BeforeBeginEnvironment{mdframed}{\bigskip}
+\AfterEndEnvironment{mdframed}{\medskip}
+
+\mdfsetup{%
+	backgroundcolor=codeboxcolor,
+	linecolor=white}
+
+\setminted{%
+	mathescape,
+	linenos,
+	breaklines,
+	tabsize=3}
+
+\newcommand{\code}[1]{%
+	\texttt{\hl{#1}}%
+}
+
+\newcommand{\javacode}[1]{%
+	\mintinline[escapeinside=~~]{java}{#1}
+}
+
+\newcommand{\javacodecolor}[1]{%
+	\mintinline[escapeinside=~~,bgcolor=codeboxcolor]{java}{#1}
+}
+
+\tikzumlset{fill class=red!7}
+\tikzumlset{font=\footnotesize}
+
+\newcounter{number}[section]
+\newenvironment{exercise}[1][]
+{%
+	\refstepcounter{number}%
+	\noindent%
+	\ifthenelse{\equal{\thesection}{0}}%
+	{%
+		\ifthenelse{\equal{#1}{}}%
+		{\textbf{\exercisedescription~\thenumber.\\}}%
+		{\textbf{\exercisedescription~\thenumber. (#1)\\}}%
+	}%
+	{%
+		\ifthenelse{\equal{#1}{}}%
+		{\textbf{\exercisedescription~\thesection.\thenumber.\\}}%
+		{\textbf{\exercisedescription~\thesection.\thenumber. (#1)\\}}%
+	}%
+	\rmfamily%
+}{\medskip}%
+
+\makeatletter%
+\setlength{\@fptop}{5pt}
+
+\makeatletter
+\DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
+\DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
+\DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\mathtt}
+\DeclareOldFontCommand{\bf}{\normalfont\bfseries}{\mathbf}
+\DeclareOldFontCommand{\it}{\normalfont\itshape}{\mathit}
+\DeclareOldFontCommand{\sl}{\normalfont\slshape}{\@nomath\sl}
+\DeclareOldFontCommand{\sc}{\normalfont\scshape}{\@nomath\sc}
+\makeatother

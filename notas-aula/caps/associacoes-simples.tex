@@ -1,0 +1,931 @@
+\chapter{Associações simples}
+
+Uma associação é uma conexão entre classes e representa uma relação entre os objetos envolvidos. Elas são representadas em um diagrama de classes através de uma linha, que conecta as classes associadas. Os dados podem fluir em uma ou em ambas as direções através do link. Existe dois duas formas principais de associação: com multiplicidade um (1) e com multiplicidade muitos (*). Cada uma das formas de associação pode ser implementada de forma unidirecional ou bidirecional.
+
+
+\section{Associação com multiplicidade um (1)}
+
+Uma associação de multiplicidade 1 ocorre quanto um objeto está vinculado a apenas um objeto da outra classe. Um exemplo deste tipo de associação é o vínculo existente entre um veículo (primeira entidade -- classe) e sua documentação (segunda entidade -- classe). Um veículo possui exatamente uma documentação, enquanto uma documentação pertence a exatamente um veículo. Logo, dizemos que este relacionamento é uma \textbf{associação de um para um}.
+
+Na associação com multiplicidade 1, ao menos um dos atributos de uma das classes é do tipo da outra classe. Consideremos um exemplo envolvendo as classes \code{Veiculo} e \code{Documentacao}. Neste caso, o \code{Veiculo} possui um atributo do tipo \code{Documentacao} (\textbf{associação unidirecional de Veiculo para Documentacao}), ou a \code{Documentacao} possui um atributo do tipo \code{Veiculo} (\textbf{associação unidirecional de Documentacao para Veiculo}), ou ambos os casos (\textbf{associação bidirecional}).
+
+\subsection{Caso unidirecional}
+
+Consideremos o caso unidirecional. Se queremos que o atributo que implementa a associação fique na classe \code{Veiculo}, então temos uma associação unidirecional de \code{Veiculo} para \code{Documentacao}. Sua representação UML é apresentada na Figura~\ref{fig:associacao-uni-veiculo}. A direção da associação (chamada de navegabilidade) é informada através de uma ponta de seta. A navegabilidade representada na Figura~\ref{fig:associacao-uni-veiculo} mostra que a partir da classe \code{Veiculo} podemos chegar na classe \code{Documentacao}, pois existe um atributo na classe \code{Veiculo} do tipo \code{Documentacao}. Percebam que o atributo que implementa a associação não é representado no diagrama de classes, pois é implícito na representação da associação.
+
+\begin{figure}[h]
+	\centering
+	
+	\begin{tikzpicture}
+	\umlclass{Veiculo}{
+		-- modelo: String \\
+		-- marca: String \\
+		-- ano: int
+		}{
+		+ métodos set() e get()
+		}
+		
+	\umlclass[x=8]{Documentacao}{
+		-- renavam: int \\
+		-- validade: int \\
+		-- placa: String
+		}{
+		+ métodos set() e get()
+		}
+	
+	\umluniassoc[geometry=-|-, mult1=1, mult2=1, pos2=2.8, align2=top]{Veiculo}{Documentacao}	
+	\end{tikzpicture}
+	
+	\caption{Associação unidirecional de \texttt{Veiculo} para \texttt{Documentacao}}
+	\label{fig:associacao-uni-veiculo}
+\end{figure}
+
+\textbf{OBS:} ao dizer que o veículo possui exatamente uma documentação, o vínculo é obrigatório. Ou seja, o atributo \code{documentacao} da classe \code{Veiculo} deve, obrigatoriamente, receber uma referência a um objeto da classe \code{Documentacao}. Caso quiséssemos modelar o relacionamento de tal forma que o veículo pudesse existir mesmo sem o vínculo com a documentação, então a multiplicidade do lado \code{Documentacao} deveria ser \code{0..1}.
+
+Os trechos de código abaixo mostram a implementação das classes apresentadas no diagrama da Figura~\ref{fig:associacao-uni-veiculo} (os métodos construtores e demais métodos acessores foram omitidos). Reparem o atributo \code{doc} na classe \code{Veiculo}. Assim como os demais atributos, métodos acessores são definidos para acesso à documentação do veículo (ao atributo \code{doc}).
+ 
+\begin{minted}{java}
+public class Veiculo { 
+	private String modelo; 
+	private String marca; 
+	private int ano; 
+	private Documentacao doc; 
+
+	public Documentacao getDoc() {
+		return doc;
+	}
+	 
+	public void setDoc(Documentacao doc) {
+		this.doc = doc;
+	}
+	
+	//demais métodos
+}
+\end{minted}
+
+\begin{minted}{java}
+public class Documentacao { 
+	private int renavam; 
+	private int validade;
+	private String placa; 
+	
+	public int getRenavam() {
+		return renavam;
+	}
+	 
+	public void setRenavam(int renavam) {
+		this.renavam = renavam;
+	}
+	
+	//demais métodos
+}
+\end{minted}
+
+O trecho de código a seguir mostra o uso da associação. Uma vez que as classes estejam associadas, devemos vincular os objetos no momento da sua criação (linha 4). Além disso, podemos acessar o vínculo para recuperar valores da documentação, a partir de um objeto da classe \code{Veiculo} (linha 5). Repare que não é possível acessar os dados do veículo a partir de um objeto da classe \code{Documentacao}, uma vez que o atributo que realiza a associação encontra-se na classe \code{Veiculo}.
+
+\begin{minted}{java}
+public static void main(String[] args) { 
+	Veiculo carro = new Veiculo("Focus", "Ford", 2017); 
+	Documentacao doc = new Documentacao(512647522, 2018, "QWD-2573"); 
+	carro.setDoc(doc);
+	System.out.println("O veículo " + carro.getModelo() + " possui placa " + carro.getDoc().getPlaca()); 
+}
+\end{minted}
+
+Ainda no caso unidirecional, se quisermos que o atributo que implementa a associação fique na classe \code{Documentacao}, então temos uma associação unidirecional de \code{Documentacao} para \code{Veiculo}. Sua representação UML é apresentada na Figura~\ref{fig:associacao-uni-documentacao}. A direção da associação (navegabilidade) é apresentada pela ponta de seta, que aponta para a classe \code{Veiculo}. Neste caso, a partir da classe \code{Documentacao} podemos chegar na classe \code{Veiculo}, pois existe um atributo na classe \code{Documentacao} do tipo \code{Veiculo}.
+
+\begin{figure}[h]
+	\centering
+	
+	\begin{tikzpicture}
+	\umlclass{Veiculo}{
+		-- modelo: String \\
+		-- marca: String \\
+		-- ano: int
+	}{
+		+ métodos set() e get()
+	}
+	
+	\umlclass[x=8]{Documentacao}{
+		-- renavam: int \\
+		-- validade: int \\
+		-- placa: String
+	}{
+		+ métodos set() e get()
+	}
+	
+	\umluniassoc[geometry=-|-, mult1=1, mult2=1, pos2=2.8, align2=top]{Documentacao}{Veiculo}	
+	\end{tikzpicture}
+	
+	\caption{Associação unidirecional de \texttt{Documentacao} para \texttt{Veiculo}}
+	\label{fig:associacao-uni-documentacao}
+\end{figure}
+
+\textbf{OBS:} novamente, ao dizer que a documentação é de exatamente um veículo, o vínculo é obrigatório. Ou seja, o atributo \code{veiculo} da classe \code{Documentacao} deve, obrigatoriamente, receber uma referência a um objeto da classe \code{Veiculo}. Caso quiséssemos modelar o relacionamento de tal forma que a documentação pudesse existir mesmo sem o vínculo com o veículo, então a multiplicidade do lado \code{Veiculo} deveria ser \code{0..1}.
+
+Os trechos de código abaixo mostram a implementação das classes apresentadas no diagrama da Figura~\ref{fig:associacao-uni-documentacao} (os métodos construtores e demais métodos acessores foram omitidos). Reparem o atributo \code{veiculo} na classe \code{Documentacao}. Assim como os demais atributos, métodos acessores são definidos para acesso ao veículo da documentação (ao atributo \code{veiculo}).
+
+\begin{minted}{java}
+public class Veiculo {
+	private String modelo;
+	private String marca;
+	private int ano;
+	
+	public String getModelo() {
+		return modelo;
+	}
+	
+	public void setModelo(String modelo) {
+		this.modelo = modelo;
+	}
+	
+	//demais métodos
+}
+\end{minted}
+
+\begin{minted}{java}
+public class Documentacao {
+	private int renavam;
+	private int validade;
+	private String placa;
+	private Veiculo veiculo;
+	
+	public Veiculo getVeiculo() {
+		return veiculo;
+	}
+	
+	public void setVeiculo(Veiculo veiculo){
+		this.veiculo = veiculo;
+	}
+	
+	//demais métodos
+}
+\end{minted}
+
+O trecho de código a seguir mostra o uso da associação. Analogamente ao exemplo anterior, podemos acessar o vínculo para recuperar valores do veículo a partir de um objeto da classe \code{Documentacao} (linha 5). Repare que não é possível acessar os dados da documentação a partir de um objeto da classe \code{Veiculo}, uma vez que o atributo que realiza a associação encontra-se na classe \code{Documentacao}.
+
+\begin{minted}{java}
+public static void main(String[] args) {
+	Veiculo carro = new Veiculo("Focus", "Ford", 2017);
+	Documentacao doc = new Documentacao(512647522, 2018, "QWD-2573");
+	doc.setVeiculo(carro);
+	System.out.println("O documento " + doc.getRenavam() + " pertence ao veículo " + doc.getVeiculo().getModelo());
+}
+\end{minted}
+
+\subsection{Caso bidirecional}
+
+Se quisermos que ambas as classes possuam atributos que implementem o vínculo, podemos adotar uma associação bidirecional. Neste caso, existe um atributo da classe \code{Veiculo} na classe \code{Documentacao}, bem como um atributo da classe \code{Documentacao} na classe \code{Veiculo}. Com isso, é possível acessar a documentação a partir da classe \code{Veiculo}, bem como acessar o veículo a partir da classe \code{Documentacao}. Na UML, representamos uma associação bidirecional aplicando a ponta de seta nos dois lados da linha, ou omitindo a ponta de seta e mantendo uma linha simples (neste caso, entende-se que a associação é bidirecional). A Figura~\ref{fig:associacao-bidirecional} mostra as duas opções de representação UML de um relacionamento de associação bidirecional.
+
+\begin{figure}[h]
+	\centering
+	
+	\begin{tikzpicture}
+	\umlclass{Veiculo}{
+		-- modelo: String \\
+		-- marca: String \\
+		-- ano: int
+	}{
+		+ métodos set() e get()
+	}
+	
+	\umlclass[x=8]{Documentacao}{
+		-- renavam: int \\
+		-- validade: int \\
+		-- placa: String
+	}{
+		+ métodos set() e get()
+	}
+	
+	\umlassoc[geometry=-|-, mult1=1, mult2=1, pos2=2.8, align2=top]{Documentacao}{Veiculo}	
+	
+	\umlclass[y=-4]{Veiculo}{
+		-- modelo: String \\
+		-- marca: String \\
+		-- ano: int
+	}{
+		+ métodos set() e get()
+	}
+	
+	\umlclass[x=8,y=-4]{Documentacao}{
+		-- renavam: int \\
+		-- validade: int \\
+		-- placa: String
+	}{
+		+ métodos set() e get()
+	}
+	
+	\umluniassoc[geometry=-|-, mult1=1, mult2=1, pos2=2.8, align2=top]{Documentacao}{Veiculo}	
+	\umluniassoc[geometry=-|-]{Veiculo}{Documentacao}	
+	\end{tikzpicture}
+	
+	\caption{Associação unidirecional de \texttt{Documentacao} para \texttt{Veiculo}}
+	\label{fig:associacao-bidirecional}
+\end{figure}
+
+Os trechos de código abaixo mostram a implementação da associação bidirecional entre \code{Veiculo} e \code{Documentacao}. Repare nos atributos \code{doc} (classe \code{Veiculo}) e \code{veiculo} (classe \code{Documentacao}), os quais implementam o vínculo bidirecional e permite a navegação em ambos os sentidos.
+
+ \begin{minted}{java}
+public class Veiculo {
+	private String modelo;
+	private String marca;
+	private int ano;
+	private Documentacao doc;
+	
+	public Documentacao getDoc() {
+		return doc;
+	}
+	
+	public void setDoc(Documentacao doc) {
+		this.doc = doc;
+	}
+	
+	//demais métodos
+}
+\end{minted}
+
+\begin{minted}{java}
+public class Documentacao {
+	private int renavam;
+	private int validade;
+	private String placa;
+	private Veiculo veiculo;
+	
+	public Veiculo getVeiculo() {
+		return veiculo;
+	}
+	
+	public void setVeiculo(Veiculo veiculo){
+		this.veiculo = veiculo;
+	}
+	
+	//demais métodos
+}
+\end{minted}
+
+O código a seguir mostra o uso das entidades com a associação bidirecional. Após a criação dos objetos, eles são vinculados nas linhas 4 e 5. Perceba que é preciso atribuir o veículo à sua documentação, e também a documentação ao seu veículo, uma vez que a associação é bidirecional. Após isso, é possível acessar os dados do veículo a partir da documentação (linha 6), bem como acessar os dados da documentação a partir do veículo (linha 7).
+
+\begin{minted}{java}
+public static void main(String[] args) {
+	Veiculo carro = new Veiculo("Focus", "Ford", 2017);
+	Documentacao doc = new Documentacao(512647522, 2018, "QWD-2573");
+	doc.setVeiculo(carro);
+	carro.setDoc(doc);
+	System.out.println(doc.getRenavam() + " pertence ao " + doc.getVeiculo().getModelo());
+	System.out.println(carro.getModelo() + " possui placa " + carro.getDoc().getPlaca());
+}
+\end{minted}
+
+ 
+\section{Exemplo -- Gerente e Sala}
+ 
+Consideremos as entidades \code{Gerente} e \code{Sala}. Cada gerente possui uma sala de trabalho. Cada sala é ocupada por, no máximo, um gerente. Logo, as entidades possuem uma associação, cuja multiplicidade máxima é 1. No entanto, neste caso um gerente pode não trabalhar em uma sala (caso seja um gerente externo, por exemplo). Além disso, uma sala pode não possuir nenhum gerente que trabalhe nela (uma sala vazia, por exemplo). Podemos informar a possibilidade de haver estes casos no próprio diagrama de classes, atribuindo multiplicidade \code{0..1}, ou seja, um gerente possui zero ou uma sala. Com isso, a chamada para vínculo dos objetos não é obrigatória e o atributo que implementa a associação pode não receber um vínculo (armazenar valor \code{null}).
+
+Se desejarmos que a entidade \code{Gerente} tenha acesso aos dados da sua sala e, ao mesmo tempo, a entidade \code{Sala} tenha acesso aos dados do gerente que trabalha nela, podemos optar por uma associação bidirecional. O diagrama apresentado pela Figura~\ref{fig:gerente-sala} modela esta situação. As classes possuem uma associação bidirecional com multiplicidade \code{0..1} nos dois lados. Com isso, um gerente trabalha em uma sala ou em nenhuma sala, enquanto uma sala é habitada por um gerente, ou por nenhum gerente.
+
+\begin{figure}[h]
+	\centering
+	
+	\begin{tikzpicture}
+	\umlclass{Gerente}{
+		-- matricula: int \\
+		-- nome: String \\
+		-- funcao: String
+	}{
+		+ métodos set() e get()
+	}
+	
+	\umlclass[x=8]{Sala}{
+		-- numero: int \\
+		-- predio: int \\
+		-- andar: int
+	}{
+		+ métodos set() e get()
+	}
+	
+	\umlassoc[geometry=-|-, mult1=0..1, mult2=0..1, pos1=0.25, pos2=2.75, align2=top]{Gerente}{Sala}
+	\end{tikzpicture}
+	
+	\caption{Diagrama de classes para o exemplo \texttt{Sala} e \texttt{Gerente}}
+	\label{fig:gerente-sala}
+\end{figure}
+
+Os techos de código abaixo mostram a implementação das classes \code{Gerente} e \code{Sala}. Os métodos \code{setSala} e \code{setGerente} foram implementados de tal forma que permita a chamada de uma única instrução, sem exigir que o programador faça o vínculo dos dois lados. Com isso, o programador se preocupa apenas em chamar o método \code{setSala} (da classe \code{Gerente}), que armazena o objeto recebido como parâmetro no atributo \code{sala} (linha 27) e, caso o parâmetro não seja \code{null}, atribui a si mesmo como gerente da sala (linhas 28 a 30), fazendo o vínculo nos dois lados. Já o método \code{setGerente} verifica se o parâmetro recebido não é \code{null}, neste caso o gerente antes vinculado a esta sala recebe \code{null} como sala, pois um novo gerente trabalhará nesta sala (linha 21). Finalmente, o novo gerente é atribuído (linha 22).
+ 
+\begin{minted}{java}
+public class Gerente {
+	private int matricula;
+	private String nome;
+	private String funcao;
+	private Sala sala;
+	
+	public Gerente() {}
+	
+	public Gerente(int matricula, String nome, String funcao) {
+		this.matricula = matricula;
+		this.nome = nome;
+		this.funcao = funcao;
+	}
+	
+	public Gerente(int matricula, String nome, String funcao, Sala sala) {
+		this.matricula = matricula;
+		this.nome = nome;
+		this.funcao = funcao;
+		setSala(sala);
+	}
+	
+	public Sala getSala() {
+		return sala;
+	}
+	
+	public void setSala(Sala sala) {
+		this.sala = sala;
+		if(sala != null)
+			sala.setGerente(this);
+		}
+	}
+	
+	//demais métodos acessores
+}
+\end{minted}
+ 
+\begin{minted}{java}
+public class Sala {
+	private int numero;
+	private String predio;
+	private int andar;
+	private Gerente gerente;
+	
+	public Sala() {}
+	
+	public Sala(int numero, String predio, int andar) {
+		this.numero = numero;
+		this.predio = predio;
+		this.andar = andar;
+	}
+	
+	public Gerente getGerente() {
+		return gerente;
+	}
+	
+	public void setGerente(Gerente gerente) {
+		if(this.gerente != null)
+			this.gerente.setSala(null);
+			this.gerente = gerente;
+		}
+	}
+	
+	//demais métodos acessores
+}
+\end{minted}
+ 
+Uma boa prática consiste em separar as funcionalidades do programa da classe que implementa o método \code{main}. Nos exemplos abaixo, o método \code{main} é implementado pela classe \code{Principal}, enquanto as funcionalidades do sistema são implementadas pela classe \code{Exemplo}. Esta classe ainda implementa um método \code{run}, que chama os métodos e as instruções desejadas (poderia apresentar um menu ao usuário, por exemplo). O método \code{main} apenas cria um objeto da classe \code{Exemplo} e chama o seu método \code{run}. Ou seja, a função do método \code{main} se limira a iniciar a aplicação.
+ 
+\begin{minted}{java}
+public class Principal {
+	public static void main(String[] args) {
+		Exemplo exemplo = new Exemplo();
+		exemplo.run();
+	}
+}
+\end{minted}
+ 
+\begin{minted}{java}
+public class Exemplo {
+	private List<Sala> salas = new ArrayList<Sala>();
+	private List<Gerente> gerentes = new ArrayList<Gerente>();
+
+	public void run() {
+		insereSalas();
+		insereGerentes();
+		mostraRegistros();
+	}
+
+	public void insereSalas() {
+		Sala sala1 = new Sala(101, "Alpha", 1);
+		Sala sala2 = new Sala(102, "Alpha", 1);
+		Sala sala3 = new Sala(205, "Alpha", 2);
+		Sala sala4 = new Sala(346, "Beta", 5);
+		Sala sala5 = new Sala(12, "Gamma", 3);
+
+		salas.add(sala1);
+		salas.add(sala2);
+		salas.add(sala3);
+		salas.add(sala4);
+		salas.add(sala5);
+	}
+
+	public void insereGerentes() {
+		Gerente gerente1 = new Gerente(123456, "José da Silva", "Compras");
+		Gerente gerente2 = new Gerente(654321, "Maria Pereira", "Vendas");
+		Gerente gerente3 = new Gerente(123789, "João Assunção", "Marketing");
+		Gerente gerente4 = new Gerente(987321, "Ana Maria Rodrigues", "Produção");
+
+		gerente1.setSala(salas.get(0));
+		gerente2.setSala(salas.get(1));
+		gerente3.setSala(salas.get(2));
+		gerente4.setSala(salas.get(0));
+
+		gerentes.add(gerente1);
+		gerentes.add(gerente2);
+		gerentes.add(gerente3);
+		gerentes.add(gerente4);
+	}
+
+	public void mostraRegistros() {
+		for(Gerente g : gerentes) {
+			if(g.getSala() != null)
+				System.out.println(g.getNome() + " trabalha na sala " + g.getSala().getNumero() + " do prédio " + g.getSala().getPredio() + ".");
+			else
+				System.out.println(g.getNome() + " não possui uma sala de trabalho.");
+		}
+
+		System.out.println("");
+
+		for(Sala s : salas) {
+			if(s.getGerente() != null)
+				System.out.println("Na sala " + s.getNumero() + " do prédio " + s.getPredio() + " trabalha " + s.getGerente().getNome() + ".");
+			else
+				System.out.println("Na sala " + s.getNumero() + " do prédio " + s.getPredio() + " não trabalha nenhum gerente.");
+		}
+	}
+}
+\end{minted}
+
+O método \code{insereSalas} cria um conjunto de salas e insere na lista de salas. O método \code{insereGerentes} cria um conjunto de gerentes, vincula a algumas das salas criadas pelo método anterior e os insere na lista de gerentes. Repare que o vínculo é feito apenas pelo método \code{setSala}, dada a implementação apresentada anteriormente. O método \code{mostraRegistros} percorre a lista de gerentes e apresenta seu nome, a sala e o prédio onde trabalha. Caso ele não esteja vinculado a nenhuma sala (quando o atributo \code{sala} é \code{null}), é apresentada a mensagem de que o mesmo não possui sala de trabalho. Depois disso, a lista de salas é percorrida, apresentando o número da sala e seu prédio, juntamente com o nome do gerente que ocupa esta sala. Caso a sala esteja vazia (o atributo \code{gerente} é \code{null}), é apresentada a mensagem de que na referida sala não trabalha nenhum gerente.
+
+\begin{minipage}{\textwidth}
+	\textbf{\texttt{SAÍDA:}}\\
+	\texttt{José da Silva não possui uma sala de trabalho.}\\
+	\texttt{Maria Pereira trabalha na sala 102 do prédio Alpha.}\\
+	\texttt{João Assunção trabalha na sala 205 do prédio Alpha.}\\
+	\texttt{Ana Maria Rodrigues trabalha na sala 101 do prédio Alpha.}\\
+	\\
+	\texttt{Na sala 101 do prédio Alpha trabalha Ana Maria Rodrigues.}\\
+	\texttt{Na sala 102 do prédio Alpha trabalha Maria Pereira.}\\
+	\texttt{Na sala 205 do prédio Alpha trabalha João Assunção.}\\
+	\texttt{Na sala 346 do prédio Beta não trabalha nenhum gerente.}\\
+	\texttt{Na sala 12 do prédio Gamma não trabalha nenhum gerente.}
+\end{minipage}
+
+\section{Associação com multiplicidade muitos (*)}
+ 
+A associação com multiplicidade muitos (*) ocorre quanto um objeto está vinculado a vários objetos da outra classe. Um exemplo deste tipo de associação é o vínculo existente entre uma empresa (primeira entidade -- classe) e seus funcionários (segunda entidade -- classe). Um funcionário trabalha em uma empresa, e uma empresa possui vários (ou muitos) funcionários. Perceba que, agora, um objeto da classe \code{Empresa} está associado a vários objetos da classe \code{Funcionario}. Logo, dizemos que este relacionamento é uma \textbf{associação de um para muitos}.
+
+Como em qualquer associação, os dados podem fluir em uma ou em ambas as direções através do link. Isto é, podemos implementar uma associação com multiplicidade muitos tanto na forma unidirecional, quanto bidirecional. Podemos utilizar um atributo da classe \code{Empresa} na classe \code{Funcionario} (\textbf{associação unidirecional de Funcionario para Empresa}), ou uma lista de objetos da classe \code{Funcionario} na classe \code{Empresa} (\textbf{associação unidirecional de Empresa para Funcionario}), ou ambos os casos (\textbf{associação bidirecional}). 
+
+Repare que no caso de multiplicidade muitos, existem casos em que se faz necessário implementar a associação utilizando uma lista de objetos da outra classe. Este é o caso onde, a partir de uma empresa, desejamos obter os dados dos seus funcionários. Como a empresa não possui apenas um funcionário, não é possível implementar a associação com um objeto simples. Logo, uma lista de funcionários permite o armazenamento dos diversos funcionários da empresa.
+
+\subsection{Caso unidirecional}
+
+Consideremos o caso unidirecional. Se quisermos que o vínculo seja implementado pela classe \code{Empresa}, então temos uma associação unidirecional de \code{Empresa} para \code{Funcionario}. Sua representação UML é apresentada na Figura~\ref{fig:associacao-muitos-uni-empresa}.
+
+\begin{figure}[h]
+	\centering
+	
+	\begin{tikzpicture}
+	\umlclass{Empresa}{
+		-- razaoSocial: String \\
+		-- nomeFantasia: String \\
+		-- cnpj: String
+	}{
+		+ métodos set() e get()
+	}
+	
+	\umlclass[x=8]{Funcionario}{
+		-- nome: String \\
+		-- cpf: String
+	}{
+		+ métodos set() e get()
+	}
+	
+	\umluniassoc[geometry=-|-, mult1=1, mult2=*, pos1=0.2, pos2=2.75, align2=top]{Empresa}{Funcionario}
+	\end{tikzpicture}
+	
+	\caption{Associação unidirecional de \texttt{Empresa} para \texttt{Funcionario}}
+	\label{fig:associacao-muitos-uni-empresa}
+\end{figure}
+
+Neste caso, precisamos implementar uma lista de objetos de \code{Funcionario} na classe \code{Empresa}. Os trechos de código abaixo mostram a implementação de ambas as classes para este caso. Uma boa prática consiste em definir um método específico para adicionar um objeto na lista. Este método é apresentado nas linhas 7 a 9 da classe \code{Empresa}. Sempre que for necessário vincular um funcionário à empresa, este método pode (ou deve) ser utilizado.
+
+\textbf{OBS:} podemos substituir a multiplicidade muitos por \code{0..*} ou \code{1..*}, definindo o mínimo de objetos que a lista deve conter. No caso da multiplicidade \code{0..*} a lista pode conter nenhum, um ou muitos objetos vinculados. No caso da multiplicidade \code{1..*}, a lista deve conter ao menos um objeto vinculado.
+
+\begin{minted}{java}
+public class Empresa {
+	private String razaoSocial;
+	private String nomeFantasia;
+	private String cnpj;
+	private List<Funcionario> funcionarios;
+
+	public Empresa() {
+		funcionarios = new ArrayList<Funcionario>();
+	}
+
+	public void addFuncionario(Funcionario f) {
+		this.funcionarios.add(f);
+	}
+	
+	//demais métodos
+}
+\end{minted}
+
+\begin{minted}{java}
+public class Funcionario {
+	private String nome;
+	private String cpf;
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+	
+	//demais métodos
+}
+\end{minted}
+
+O trecho de código a seguir mostra o uso da associação implementada. São criados distintos objetos das classes \code{Funcionario} e \code{Empresa} (linhas 2 a 7). Após isso, os funcionários são atribuídos às respectivas empresas utilizando o método \code{addFuncionario} (linhas 9 a 11). Finalmente, todos os funcionários da empresa \code{e1} são apresentados (linhas 13 e 14). Perceba que a lista de funcionários da empresa \code{e1} é recuperada e, então, seus dados são apresentados em tela.
+
+\begin{minted}{java}
+public static void main(String[] args) {
+	Funcionario f1 = new Funcionario("José da Silva", "012.541.379-33");
+	Funcionario f2 = new Funcionario("Maria Pereira", "062.411.632-12");
+	Funcionario f3 = new Funcionario("Pedro Ferreira", "178.219.475-25");
+	
+	Empresa e1 = new Empresa("Empresa 1 LTDA", "Empresa 1", "123.456.789/0001-01");
+	Empresa e2 = new Empresa("Empresa 2 LTDA", "Empresa 2", "123.456.789/0001-02");
+	
+	e1.addFuncionario(f1);
+	e1.addFuncionario(f2);
+	e2.addFuncionario(f3);
+	
+	for(Funcionario f : e1.getFuncionarios())
+		System.out.println(f.getNome() + " é funcionário na " + e1.getNomeFantasia());
+}
+\end{minted}
+
+A mesma análise anterior pode ser feita na associação com multiplicidade muitos. Mantendo uma lista de funcionários para cada empresa, podemos acessar os dados dos funcionários a partir da classe \code{Empresa}. Porém, não é possível acessar os dados da empresa a partir da classe \code{Funcionario}. Para modificar isso, podemos inverter a navegabilidade da associação, de modo a manter o vínculo na classe \code{Funcionario}. Neste caso, o funcionário tem um atributo simples do tipo \code{Empresa}. Este caso está representado no diagrama da Figura~\ref{fig:associacao-muitos-uni-funcionario} e sua implementação segue os conceitos apresentados nas seções anteriores, podendo ser observada nos códigos abaixo.
+
+\textbf{OBS:} como a multiplicidade indica que o funcionário pertence a exatamente uma empresa, o vínculo é obrigatório.
+
+\begin{figure}[h]
+	\centering
+	
+	\begin{tikzpicture}
+	\umlclass{Empresa}{
+		-- razaoSocial: String \\
+		-- nomeFantasia: String \\
+		-- cnpj: String
+	}{
+		+ métodos set() e get()
+	}
+	
+	\umlclass[x=8]{Funcionario}{
+		-- nome: String \\
+		-- cpf: String
+	}{
+		+ métodos set() e get()
+	}
+	
+	\umluniassoc[geometry=-|-, mult1=*, mult2=1, pos1=0.2, pos2=2.75, align2=top]{Funcionario}{Empresa}
+	\end{tikzpicture}
+	
+	\caption{Associação unidirecional de \texttt{Funcionario} para \texttt{Empresa}}
+	\label{fig:associacao-muitos-uni-funcionario}
+\end{figure}
+
+\begin{minted}{java}
+public class Empresa {
+	private String razaoSocial;
+	private String nomeFantasia;
+	private String cnpj;
+	
+	public String getRazaoSocial() {
+		return razaoSocial; 
+	}
+	
+	public void setRazaoSocial(String r) {
+		this.razaoSocial = r; 
+	}
+}
+\end{minted}
+
+\begin{minted}{java}
+public class Funcionario {
+	private String nome;
+	private String cpf;
+	private Empresa empresa;
+	
+	public Empresa getEmpresa() {
+		return empresa; 
+	}
+	
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
+	}
+}
+\end{minted}
+
+\begin{minted}{java}
+public static void main(String[] args) {
+	Funcionario f1 = new Funcionario("José da Silva", "012.541.379-33");
+	Funcionario f2 = new Funcionario("Maria Pereira", "062.411.632-12");
+	Funcionario f3 = new Funcionario("Pedro Ferreira", "178.219.475-25");
+	
+	Empresa e1 = new Empresa("Empresa 1 LTDA", "Empresa 1", "123.456.789/0001-01");
+	Empresa e2 = new Empresa("Empresa 2 LTDA", "Empresa 2", "123.456.789/0001-02");
+	
+	f1.setEmpresa(e1);
+	f2.setEmpresa(e1);
+	f3.setEmpresa(e2);
+	
+	System.out.println(f1.getNome() + " é func. na " + f1.getEmpresa().getNomeFantasia());
+	System.out.println(f2.getNome() + " é func. na " + f2.getEmpresa().getNomeFantasia());
+	System.out.println(f3.getNome() + " é func. na " + f3.getEmpresa().getNomeFantasia());
+}
+\end{minted}
+ 
+\subsection{Caso bidirecional}
+
+Se quisermos que ambas as classes possuam atributos que implementem o vínculo, podemos adotar uma associação bidirecional. Neste caso, existe uma lista de objetos de \code{Funcionario} na classe \code{Empresa}, e um objeto da classe \code{Empresa} na classe \code{Funcionario}. Com isso, é possível acessar todos os funcionários de uma empresa, bem como a empresa em que um determinado funcionário trabalha. A Figura~\ref{fig:associacao-bidirecional-empresa} apresenta a representação UML com relacionamento bidirecional entre as classes.
+
+\begin{figure}[h]
+	\centering
+	
+	\begin{tikzpicture}
+	\umlclass{Empresa}{
+		-- razaoSocial: String \\
+		-- nomeFantasia: String \\
+		-- cnpj: String
+	}{
+		+ métodos set() e get()
+	}
+	
+	\umlclass[x=8]{Funcionario}{
+		-- nome: String \\
+		-- cpf: String
+	}{
+	+ métodos set() e get()
+	}
+	
+	\umlassoc[geometry=-|-, mult1=1, mult2=*, pos1=0.2, pos2=2.75, align2=top]{Funcionario}{Empresa}
+	\end{tikzpicture}
+	
+	\caption{Associação bidirecional entre \texttt{Empresa} e \texttt{Funcionario}}
+	\label{fig:associacao-bidirecional-empresa}
+\end{figure}
+ 
+Os trechos de código a seguir mostram a implementação da estrutura de classes apresentada na Figura~\ref{fig:associacao-bidirecional-empresa}. Repare nos atributos que implementam o vínculo bidimensional. Na classe \code{Empresa} temos a lista de funcionários (\code{funcionarios}), enquanto na classe \code{Funcionario} temos o vínculo com a empresa (\code{empresa}). Repare ainda que o método \code{setEmpresa} da classe \code{Funcionario} também realiza a operação de inclusão do funcionário na lista de funcionários da empresa.
+
+\begin{minted}{java}
+public class Empresa {
+	private String razaoSocial;
+	private String nomeFantasia;
+	private String cnpj;
+	private List<Funcionario> funcionarios;
+	
+	public void addFuncionario(Funcionario f){
+		this.funcionarios.add(f);
+	}
+}
+\end{minted}
+
+\begin{minted}{java}
+public class Funcionario {
+	private String nome;
+	private String cpf;
+	private Empresa empresa;
+	
+	public void setEmpresa(Empresa empresa){
+		this.empresa = empresa;
+		empresa.addFuncionario(this);
+	}
+}
+\end{minted} 
+
+O código abaixo mostra o uso da estrutura proposta. A atribuição é feita pela chamada do método \code{setEmpresa} (linhas 9 a 11). As linhas 13 a 15 mostram que é possível acessar todos os funcionários da empresa (\code{e1.getFuncionarios()}), bem como acessar os dados da empresa em que um funcionário trabalha (\code{f.getEmpresa().getNomeFantasia()}).
+
+\begin{minted}{java}
+public static void main(String[] args) {
+	Funcionario f1 = new Funcionario("José da Silva", "012.541.379-33");
+	Funcionario f2 = new Funcionario("Maria Pereira", "062.411.632-12");
+	Funcionario f3 = new Funcionario("Pedro Ferreira", "178.219.475-25");
+
+	Empresa e1 = new Empresa("Empresa 1 LTDA", "Empresa 1", "123.456.789/0001-01");
+	Empresa e2 = new Empresa("Empresa 2 LTDA", "Empresa 2", "123.456.789/0001-02");
+
+	f1.setEmpresa(e1);
+	f2.setEmpresa(e1);
+	f3.setEmpresa(e2);
+
+	for(Funcionario f : e1.getFuncionarios())
+		 System.out.println(f.getNome() + " trabalha na " + f.getEmpresa().getNomeFantasia());
+}
+\end{minted}
+
+\section{Exemplo -- Clube e Sócio}
+
+Considere o contexto de um clube e seus sócios, onde um clube possui vários sócios. O diagrama de classes é apresentado pela Figura~\ref{fig:exemplo-clube-socio}. Pela navegabilidade proposta, a classe \code{Clube} possui uma lista de objetos da classe \code{Socio}, podendo essa lista ser vazia (multiplicidade \code{0..*}).
+
+\begin{figure}[h]
+	\centering
+	
+	\begin{tikzpicture}
+	\umlclass{Clube}{
+		-- nome: String \\
+		-- cidade: String
+	}{
+		+ métodos set() e get()
+	}
+	
+	\umlclass[x=8]{Socio}{
+		-- matricula: int \\
+		-- nome: String \\
+		-- idade: int
+	}{
+		+ métodos set() e get()
+	}
+	
+	\umluniassoc[geometry=-|-, mult1=1, mult2=0..*, pos1=0.1, pos2=2.75, align2=top]{Clube}{Socio}
+	\end{tikzpicture}
+	
+	\caption{Diagrama de classes para \texttt{Clube} e \texttt{Socio}}
+	\label{fig:exemplo-clube-socio}
+\end{figure}
+
+Os trechos de código abaixo mostram a implementação das classes \code{Clube} e \code{Socio}. Perceba que a lista que implementa a associação encontra-se na classe \code{Clube} (linha 4), conforme definido na navegabilidade. Esta classe ainda implementa o método \code{addSocio}, responsável por inserir o sócio recebido como argumento na lista. Além disso, a classe implementa o método \code{removeSocio}, que recebe a matrícula do sócio a ser removido, busca o objeto desejado na lista e o remove, caso encontrado. Este método devolve verdadeiro, em caso de sucesso, e falso, caso contrário.
+
+\begin{minted}{java}
+public class Clube {
+	private String nome;
+	private String cidade;
+	private List<Socio> socios;
+
+	public Clube() {
+		socios = new ArrayList<Socio>();
+	}
+
+	public Clube(String nome, String cidade) {
+		this.nome = nome;
+		this.cidade = cidade;
+		this.socios = new ArrayList<Socio>();
+	}
+
+	public void addSocio(Socio socio) {
+		this.socios.add(socio);
+	}
+
+	public boolean removeSocio(int matricula) {
+		for(Socio s : socios) {
+			if(s.getMatricula() == matricula) {
+				this.socios.remove(s);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public List<Socio> getSocios() {
+		return socios;
+	}
+
+	public void setSocios(List<Socio> socios) {
+		this.socios = socios;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public String getCidade() {
+		return cidade;
+	}
+
+	public void setCidade(String cidade) {
+		this.cidade = cidade;
+	}
+}
+\end{minted}
+
+\begin{minted}{java}
+public class Socio {
+	private int matricula;
+	private String nome;
+	private int idade;
+
+	public Socio() {}
+
+	public Socio(int matricula, String nome, int idade) {
+		this.matricula = matricula;
+		this.nome = nome;
+		this.idade = idade;
+	}
+
+	public int getMatricula() {
+		return matricula;
+	}
+
+	public void setMatricula(int matricula) {
+		this.matricula = matricula;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public int getIdade() {
+		return idade;
+	}
+
+	public void setIdade(int idade) {
+		this.idade = idade;
+	}
+}
+\end{minted}
+
+Os trechos de código a seguir mostram o uso da estrutura de classes apresentada acima. O método \code{insereRegistros} é responsável por criar, vincular e armazenar os registros nas listas definidas na classe \code{Aplicacao}. O método \code{removeSocio} seleciona um clube e um sócio, e faz a remoção do sócio da lista de sócios do clube. Em caso de sucesso, o sócio é removido também da lista geral de sócios. O método \code{mostraRegistros} percorre a lista de clubes, acessando seus dados e sua lista de sócios, para apresentação em tela.
+
+\begin{minted}{java}
+public class Principal {
+	public static void main(String[] args) {
+		Exemplo exemplo = new Exemplo();
+		exemplo.run();
+	}
+}	
+\end{minted}
+
+\begin{minted}{java}
+public class Exemplo {
+	private List<Socio> socios = new ArrayList<Socio>();
+	private List<Clube> clubes = new ArrayList<Clube>();
+
+	public void run() {
+		insereRegistros();
+		removeSocio();
+		mostraRegistros();
+	}
+
+	private void insereRegistros() {
+		Socio s1 = new Socio(123456, "Maria da Rosa", 45);
+		Socio s2 = new Socio(654321, "José da Silva", 25);
+		Socio s3 = new Socio(147852, "Ana Lúcia da Silva", 30);
+		Socio s4 = new Socio(369852, "Pedro Ferreira", 28);
+		socios.add(s1);
+		socios.add(s2);
+		socios.add(s3);
+		socios.add(s4);
+
+		Clube c1 = new Clube("Clube ABC", "Ibirama");
+		Clube c2 = new Clube("Clube XYZ", "Blumenau");
+		clubes.add(c1);
+		clubes.add(c2);
+
+		c1.addSocio(s1);
+		c1.addSocio(s2);
+		c2.addSocio(s3);
+		c2.addSocio(s4);
+	}
+
+	public void removeSocio() {
+		Clube c = clubes.get(0);
+		Socio s = socios.get(0);
+
+		if(c.removeSocio(s.getMatricula())) {
+			System.out.println("Sócio [" + s.getMatricula() + "] removido do clube " + c.getNome());
+			socios.remove(s);
+		} else {
+			System.out.println("Sócio [" + s.getMatricula() + "] não pertence ao clube " + c.getNome());
+		}
+}
+
+	private void mostraRegistros() {
+		for(Clube c : clubes) {
+			System.out.println("Sócios do clube " + c.getNome());
+			for(Socio s : c.getSocios()) {
+				System.out.println("- " + s.getNome() + " [" + s.getMatricula() + "]");
+			}
+			System.out.println("");
+		}
+	}
+}
+\end{minted}
+
+\begin{minipage}{\textwidth}
+	\textbf{\texttt{SAÍDA:}}\\
+	\texttt{Sócios do Clube ABC}\\
+	\texttt{- José da Silva [654321]}\\
+	\\
+	\texttt{Sócios do Clube XYZ}\\
+	\texttt{- Ana Lúcia da Silva [147852]}\\
+	\texttt{- Pedro Ferreira [369852]}
+\end{minipage}

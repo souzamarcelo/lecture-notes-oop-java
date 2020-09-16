@@ -1,0 +1,121 @@
+\chapter{Classes abstratas}
+
+\section{Conceitos e benefícios}
+
+O maior benefício oriundo da generalização/especialização de classes através da herança é o \textbf{polimorfismo}. Ele é um recurso poderoso, capaz de garantir ao sistema flexibilidade. Para estudar o conceito de classes abstratas e sua relação com o polimorfismo, consideremos um contexto de figuras geométricas, as quais compartilham entre si uma cor e possuem métodos para cálculo da sua área e do seu perímetro. A Figura~\ref{fig:abstratas-figuras} apresenta a estrutura de classes onde diferentes figuras geométricas herdam as características da classe \code{Figura}.
+
+\begin{figure}[h]
+	\centering
+	
+	\begin{tikzpicture}
+	\umlemptyclass{Figura}
+	\umlemptyclass[x=-3,y=-3.5]{Retangulo}
+	\umlemptyclass[y=-3.5]{Triangulo}
+	\umlemptyclass[x=2.75,y=-3.5]{Circulo}
+	
+	\umlinherit[geometry=|-]{Retangulo}{Figura}
+	\umlinherit{Triangulo}{Figura}
+	\umlinherit[geometry=|-]{Circulo}{Figura}
+	\end{tikzpicture}
+	
+	\caption{Estrutura de classes para a modelagem de figuras geométricas}
+	\label{fig:abstratas-figuras}
+\end{figure}
+
+Os trechos de código a seguir mostram a implementação das classes \code{Figura} e \code{Retangulo}, envolvidas no diagrama apresentado pela Figura~\ref{fig:abstratas-figuras}. A classe \code{Figura} define o atributo \code{cor} e os métodos \code{area} e \code{perimetro}, que serão herdados pelas subclasses. A classe \code{Retangulo} implementa alguns atributos adicionais, além de sobrescrever os métodos \code{area} e \code{perimetro}.
+
+\begin{minted}{java}
+public class Figura {
+	private String cor;
+	
+	public double area() {
+		return 0;
+	}
+	
+	public double perimetro() {
+		return 0;
+	}
+}
+\end{minted}
+
+\begin{minted}{java}
+public class Retangulo extends Figura {
+	private double lado1, lado2;
+	
+	public double area() {
+		return lado1 * lado2;
+	}
+
+	public double perimetro() {
+		return (lado1 * 2) + (lado2 * 2);
+	}
+}
+\end{minted}
+
+Neste exemplo, não faz sentido termos uma instância da classe \code{Figura}, pois uma figura é sempre um triângulo, um retângulo, um círculo, um trapézio, etc. A classe \code{Figura} define uma entidade abstrata, que só existe para definir uma estrutura comum a todas as figuras concretas, além de estabelecer os métodos que todas devem apresentar (cálculo da área e do trapézio).
+
+Tecnicamente, usamos a classe \code{Figura} para garantir a estrutura e o comportamento de todas as figuras e para nos fornecer polimorfismo. Não faz sentido termos uma instância de \code{Figura} e calcularmos sua área ou perímetro, por exemplo.
+
+Uma dica para identificar casos onde não faz sentido termos uma instância da superclasse é analisar seus métodos. Quando não é possível definir sua implementação, é um bom indicativo de que a classe não deve ser instanciada.
+
+No exemplo das figuras geométricas, cada classe concreta (\code{Triangulo}, \code{Retangulo}, etc.) possui sua própria forma de calcular a área e o perímetro em função dos seus atributos. Isso não acontece na classe \code{Figura}, que é incapaz de prover uma implementação dos métodos supracitados.
+
+Nestes casos, podemos definir a classe como \textbf{abstrata}, o que implica na impossibilidade de ser instanciada. Com isso, a classe se restringe a definir a estrutura e o comportamento das classes que a estenderem e fornecer polimorfismo.
+
+Por exemplo, se tivermos uma lista de figuras (\code{List<Figura>}) estamos fazendo uso do polimorfismo. Caso a classe \code{Figura} seja abstrata, temos a garantia de que todos os objetos da lista são figuras concretas (triângulos, retângulos, etc.) e, com isso, faz sentido chamarmos os métodos \code{area} e \code{perimetro} para qualquer um deles.
+
+\section{Implementação}
+
+A palavra reservada \code{abstract} define uma classe como abstrata. O trecho de código abaixo mostra a definição da classe \code{Figura} como abstrata. Com isso, não é possível instanciar objetos dessa classe. O comando \code{Figura f = new Figura()} não compilará, enquanto o comando \code{Figura f = new Circulo()} continua funcionando normalmente.
+
+\begin{minted}{java}
+public abstract class Figura {
+	private String cor;
+
+	public double area() {
+		return 0;
+	}
+	
+	public double perimetro() {
+		return 0;
+	}
+}
+\end{minted}
+
+No diagrama de classes, as classes abstratas devem ser representadas como tal, para que esta característica fique facilmente visível. Isso pode ser feito mantendo o nome da classe em itálico (ou ainda adicionando o estereótipo \texttt{<<abstract>>} à classe), conforme apresentado na Figura~\ref{fig:abstratas-figuras-abstract}.
+
+\begin{figure}[h]
+	\centering
+	
+	\begin{tikzpicture}
+	\umlemptyclass[type=abstract]{Figura}
+	\umlemptyclass[x=-3,y=-3.5]{Retangulo}
+	\umlemptyclass[y=-3.5]{Triangulo}
+	\umlemptyclass[x=2.75,y=-3.5]{Circulo}
+	
+	\umlinherit[geometry=|-]{Retangulo}{Figura}
+	\umlinherit{Triangulo}{Figura}
+	\umlinherit[geometry=|-]{Circulo}{Figura}
+	\end{tikzpicture}
+	
+	\caption{Estrutura de classes para a modelagem de figuras geométricas com abstração}
+	\label{fig:abstratas-figuras-abstract}
+\end{figure}
+
+\section{Métodos abstratos}
+
+Resolvemos o problema de não fazer sentido termos uma instância da classe \code{Figura}. Porém, a implementação padrão dos métodos \code{area} e \code{perimetro} ainda não fazem sentido na classe \code{Figura}, uma vez que trata-se de uma entidade abstrata. O ideal seria não haver implementação do método, uma vez que não faz sentido. Além disso, também seria ideal exigir que as subclasses implementem o método, uma vez que a implementação padrão não faz sentido para qualqer classe concreta.
+
+Isso é possível definindo os métodos supracitados como abstratos. Com isso, apenas a assinatura do método é definida na superclasse, exigindo que as subclasses os implementem. Com isso, ao obtermos um objeto do tipo \code{Figura}, sabemos que ele é uma referência a um dos tipos concretos e que os métodos \code{area} e \code{perimetro} estão disponíveis (e fazem sentido).
+
+Para definir um método abstrato, basta inserir a palavra \code{abstract} na sua assinatura e omitir sua implementação, colocando ponto-e-vírgula após o fechamento de parêntesis. O trecho de código abaixo mostra a implementação da classe \code{Figura} com a definição dos métodos abstratos. Logicamente, a classe abstrata poderia definir algum método com implementação padrão às suas subclasses, caso isso fizesse sentido (ocorre em outros contextos).
+
+\begin{minted}{java}
+public abstract class Figura {
+	private String cor;
+	public abstract double area();
+	public abstract double perimetro();
+}
+\end{minted}
+
+É importante destacar que somente é possível definir um método como abstrato, caso ele pertence a uma classe abstrata. Classes concretas não podem conter métodos abstratos e devem implementar todos os métodos abstratos herdados. Uma classe abstrata pode definir métodos abstratos e métodos concretos simultaneamente.

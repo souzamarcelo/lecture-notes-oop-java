@@ -1,0 +1,54 @@
+\newcommand{\defs}{../defs}
+\input{\defs/template-notas}
+
+\newcommand{\myname}{Prof. Marcelo de Souza}
+\newcommand{\university}{Universidade do Estado de Santa Catarina}
+\newcommand{\campus}{Centro de Educação Superior do Alto Vale do Itajaí}
+\newcommand{\mytitle}{Programação Orientada a Objetos\\Notas de Aula}
+\newcommand{\version}{Versão compilada em \today.}
+\newcommand{\exercisedescription}{Exercício}
+
+\newcommand{\presentation}{Este material é utilizado em parte das aulas da disciplina de Programação I (25PRO1) do curso de Bacharelado em Engenharia de Software da Universidade do Estado de Santa Catarina (UDESC Ibirama).\\ \\
+\textbf{Contato:} \texttt{marcelo.desouza@udesc.br}}
+
+\newcommand{\license}{\small Esta obra está disponível sob uma Licença \href{https://creativecommons.org/licenses/by-nc-nd/4.0}{Creative Commons (BY-NC-ND 4.0 Internacional)}.}
+
+\newcommand{\logo}{
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.35\textwidth]{\defs/img/logo-udesc.png}
+\end{figure}
+}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\part{Conceitos básicos}
+\input{caps/revisao-java.tex}
+\input{caps/conceitos-basicos.tex}
+
+\part{Relacionamentos entre classes}
+\input{caps/relacionamentos-visao-geral.tex}
+\input{caps/associacoes-simples.tex}
+\input{caps/agregacao-composicao.tex}
+\input{caps/dependencia.tex}
+\input{caps/heranca-polimorfismo.tex}
+\input{caps/classes-abstratas.tex}
+\input{caps/realizacao.tex}
+
+\part{Tópicos adicionais}
+\input{caps/adicionais-gui.tex}
+\input{caps/adicionais-arquivos.tex}
+
+\part{Apêndices}
+\appendix
+\input{caps/exercicios.tex}
+
+\addcontentsline{toc}{chapter}{Referências Bibliográficas}
+\nocite{*}
+\bibliographystyle{apalike}
+\bibliography{referencias}
+
+\end{document}
