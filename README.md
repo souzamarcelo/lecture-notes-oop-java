@@ -23,7 +23,7 @@ Aqui estão instruções de citação, caso você utilize esse material de algum
 
 Marcelo de Souza (2020), Notas de Aula: Programação Orientada a Objetos. Online: https://github.com/souzamarcelo/lecture-notes-oop-java. Creative Commons BY-NC-ND 4.0.
 
-```
+```bibtex
 @Misc{Souza2018lnic,
     title =        {Notas de Aula: Programação Orientada a Objetos},
     author =       {Marcelo de Souza}, 
