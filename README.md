@@ -4,7 +4,7 @@
 
 Essas são as notas de aula usadas na disciplina de Programação I (Programação Orientada a Objetos com Java), do curso de [Bacharelado em Engenharia de Software](https://www.udesc.br/ceavi/engenhariadesoftware) da [Universidade do Estado de Santa Catarina](https://www.udesc.br/ceavi). Esta obra está disponível sob uma Licença <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Atribuição-NãoComercial-SemDerivações 4.0 Internacional</a>.
 
-Todo o material está organizado [nesta apostila](./notas-aula/notas-aula-oop-java.pdf), cujos arquivos podem ser acessados no diretório [notas-aula](./notas-aula). O material foi produzido com base em diferentes obras, incluindo:
+Todo o material está organizado [nesta apostila](./notas-aula-oop-java.pdf). O material foi produzido com base em diferentes obras, incluindo:
 
 + Anselmo (2005). *Aplicando Lógica Orientada a Objeto em Java*.
 + CAELUM (2017). *Apostila Java e Orientação a Objetos*.
