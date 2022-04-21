@@ -29,6 +29,6 @@ Marcelo de Souza (2020), Notas de Aula: Programação Orientada a Objetos. Onlin
     author =       {Marcelo de Souza}, 
     howPublished = {\url{https://github.com/souzamarcelo/lecture-notes-oop-java}}, 
     year =         {2017},
-    note =         {Creative Commons BY-NC-ND 4.0.}
+    note =         {Creative Commons BY-NC-ND 4.0}
 }
 ```
